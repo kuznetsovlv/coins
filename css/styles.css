@@ -3,7 +3,7 @@
 	padding: 0;
 	border: 0;
 	font-size: 0;
-	box-sizing: border-box;
+	/*box-sizing: border-box;*/
 }
 
 .hidden {
@@ -50,11 +50,12 @@ footer {
 	width: 244px;
 	background: url(../img/coin.png) no-repeat;
 	background-position: 20px 70px;
-	padding: 60px 0 0 90px;
+	padding: 60px 20px 0 90px;
 	box-sizing: border-box;
 	font-size: 72px;
 	font-family: monospace;
 	color: #faf26b;
+	text-align: right;
 }
 
 #fabric, #factory {
@@ -93,7 +94,6 @@ footer {
 
 .line {
 	width: 98%;
-	height: 30%;
 	margin: 20px auto;
 	padding: 25px 20px;
 	box-sizing: border-box;
