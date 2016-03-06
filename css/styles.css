@@ -1,0 +1,110 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 0;
+	box-sizing: border-box;
+}
+
+.hidden {
+	display: none !important;
+}
+
+section {
+	display: block;
+	width: 1024px;
+	height: 800px;
+	margin: auto;
+}
+
+main {
+	display: block;
+	padding: 20px;
+	height: 627px;
+	background: url(../img/fon.jpg) no-repeat;
+}
+
+footer {
+	display: block;
+	background: url(../img/panel.jpg) no-repeat;
+	height: 173px;
+}
+
+.cells {
+	display: table-cell;
+	height: 100%;
+	vertical-align: top;
+}
+
+#store {
+	width: 773px;
+}
+
+#border {
+	width: 7px;
+	background: url(../img/panel_with_line.jpg) no-repeat;
+	background-position: -773px 0px;
+}
+
+#statistic {
+	width: 244px;
+	background: url(../img/coin.png) no-repeat;
+	background-position: 20px 70px;
+	padding: 60px 0 0 90px;
+	box-sizing: border-box;
+	font-size: 72px;
+	font-family: monospace;
+	color: #faf26b;
+}
+
+#fabric, #factory {
+	width: 387px;
+	position: relative;
+}
+
+.cells img {
+	display: block;
+	margin: 35px auto 0;
+	cursor: pointer;
+}
+
+.cells img:hover {
+	transform: scale(1.1, 1.1);
+	-ms-transform: scale(1.1, 1.1);
+	-webkit-transform: scale(1.1, 1.1);
+	/*position: relative;
+	left: 10px;*/
+}
+
+.cells img:active {
+	transform: scale(0.8, 0.8);
+	-ms-transform: scale(0.8, 0.8);
+	-webkit-transform: scale(0.8, 0.8);
+}
+
+.cover {
+	position: absolute;
+	top: 30px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(10, 10, 10, 0.5);
+}
+
+.line {
+	width: 98%;
+	height: 30%;
+	margin: 20px auto;
+	padding: 25px 20px;
+	box-sizing: border-box;
+}
+
+.factories img {
+	display: inline-block;
+	margin: 5px;
+}
+
+.fabrics img {
+	display: inline-block;
+	margin: 3px;
+}
