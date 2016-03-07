@@ -100,17 +100,30 @@
 		return this;
 	}
 
-	function Construction (src) {
+	function Construction (src, room, atOnece, placeId) {
 		Item.call(this, src);
+		this.room = room;
+		this.atOnece = atOnce;
+		this.placeId = placeId;
 	}
 
-	function Fabric () {
-		Construction.call(this, "../img/fabric.png");
+	Construction.prototype.createCoins = function () {
+		for (var i = 0; i < this.atOnece; ++i)
+			this.room.createCoin();
+		return this;
 	}
 
-	function Factory () {
-		Construction.call(this, "../img/factory.png");
+	function Fabric (room) {
+		Construction.call(this, "../img/fabric.png", room, 1, 'fabrics');
 	}
+
+	inheritPrototype(Construction, Fabric);
+
+	function Factory (room) {
+		Construction.call(this, "../img/factory.png", room, 2, 'factories');
+	}
+
+	inheritPrototype(Construction, Factory);
 
 
 	function Button (elem) {
@@ -176,11 +189,15 @@
 	}, Timer);
 
 	function Room (elem) {
+
 		this.e = elem;
 
 		this.field = document.getElementById('field');
 		this.factoryLine = document.getElementById('factories');
 		this.fabricLine = document.getElementById('fabrics');
+
+		this.fabrics = 0;
+		this.factories = 0;
 
 		this.timer = new Timer(200);
 
@@ -200,6 +217,13 @@
 			return this.setCoins(++coins);
 		},
 
+		addConstruction: function (constuction) {
+			++this[constuction.placeId];
+			document.getElementById(constuction[placeId]).appendChild(constuction.e);
+			this.repeat(constuction.createCoins, CREATE_INTERVAL, [], constuction);
+			return this;
+		},
+
 		createCoin: function () {
 			var rect = this.field.getBoundingClientRect(),
 			    self = this;
@@ -214,18 +238,16 @@
 				top: [Math.random() * 100 * (1 - coin.e.naturalHeight / (rect.height || rect.bottom - rect.top)), '%'].join('')
 			}).addClass('btn');
 
-			// console.log(this.field.getBoundingClientRect(), coin.e.naturalHeight, coin.e.naturalWidth);
-
 			this.field.appendChild(coin.e);
 		},
 
-		repeat: function (task, ms, args) {
+		repeat: function (task, ms, args, context) {
 			var self = this;
 
 			this.timer.addTask(function () {
-				task.apply(self, arguments);
-				self.repeat(task, ms, args);
-			}, when(ms), args, this);
+				task.apply(context || self, arguments);
+				self.repeat(task, ms, args, context);
+			}, when(ms), args, context || this);
 
 			return this;
 		},
