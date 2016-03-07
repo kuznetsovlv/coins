@@ -3,11 +3,21 @@
 <head>
 	<title>Coins</title>
 	<link rel="stylesheet" href="css/styles.css">
+	<!--[if IE 9]>
+	<script src="js/ie9.js"></script>
+	<![endif]-->
+	<script src="js/algorithm.js"></script>
+
+	<script>
+		window.onload = function () {
+			new Room (document.getElementById('room'));
+		}
+	</script>
+
 </head>
 <body>
-	<section>
-		<main>
-
+	<section id="room">
+		<main id="field">
 			<div class="line factories">
 				<!-- <img src="img/factory.png">
 				<img src="img/factory.png">
@@ -28,17 +38,18 @@
 				<img src="img/fabric.png">
 				<img src="img/fabric.png"> -->
 			</div>
-		
+			<img id="start" class="centered btn" src="img/start_btn.png">
+			<img id="win" class="centered hidden" src="img/win.png">
 		</main>
 		<footer>
 			<div id="store" class="cells">
 				<div id="fabric" class="cells">
-					<img src="img/fabric.png" title="fabric">
-					<div class="cover hidden"></div>
+					<img id="fabric_creator" class="btn" src="img/fabric.png" title="fabric">
+					<div class="cover"></div>
 				</div>
 				<div id="factory" class="cells">
-					<img src="img/factory.png" title="factory">
-					<div class="cover hidden"></div>
+					<img id="factory_creator" class="btn" src="img/factory.png" title="factory">
+					<div class="cover"></div>
 				</div>
 			</div>
 			<div id="border" class="cells"></div>

@@ -10,6 +10,16 @@
 	display: none !important;
 }
 
+.centered {
+	position: absolute;
+	border-radius: 30px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+}
+
 section {
 	display: block;
 	width: 1024px;
@@ -18,6 +28,7 @@ section {
 }
 
 main {
+	position: relative;
 	display: block;
 	padding: 20px;
 	height: 627px;
@@ -66,18 +77,19 @@ footer {
 .cells img {
 	display: block;
 	margin: 35px auto 0;
-	cursor: pointer;
 }
 
 .cells img:hover {
 	transform: scale(1.1, 1.1);
 	-ms-transform: scale(1.1, 1.1);
 	-webkit-transform: scale(1.1, 1.1);
-	/*position: relative;
-	left: 10px;*/
 }
 
-.cells img:active {
+.btn {
+	cursor: pointer;
+}
+
+img.btn:active {
 	transform: scale(0.8, 0.8);
 	-ms-transform: scale(0.8, 0.8);
 	-webkit-transform: scale(0.8, 0.8);
