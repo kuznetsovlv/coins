@@ -3,6 +3,11 @@
 	padding: 0;
 	border: 0;
 	font-size: 0;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 	/*box-sizing: border-box;*/
 }
 
@@ -111,12 +116,14 @@ img.btn:active {
 	box-sizing: border-box;
 }
 
-.factories img {
+.line img {
 	display: inline-block;
+}
+
+#factories img {
 	margin: 5px;
 }
 
-.fabrics img {
-	display: inline-block;
+#fabrics img {
 	margin: 3px;
 }
