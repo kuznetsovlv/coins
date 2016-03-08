@@ -9,10 +9,6 @@
 	/*CONSTANTS*/
 	var INITIAL_COINS = 10;
 	var AIMED_COINS = 500;
-	// var FABRIC_COST = 20;
-	// var FACTORY_COST = 70;
-	// var MAX_FABRICS = 10;
-	// var MAX_FACTORIES = 5;
 	var CREATE_INTERVAL = 5000;
 
 	function inheritPrototype (from, to) {
@@ -88,11 +84,13 @@
 		this.e.src = src;
 	}
 
+	inheritPrototype(Interactive, Item);
+
 	function Coin () {
 		Item.call(this, '../img/coin.png');
 	}
 
-	inheritPrototype(Interactive, Coin);
+	inheritPrototype(Item, Coin);
 
 	Coin.prototype.setStyle = function (style) {
 		for (var key in style)
@@ -152,12 +150,12 @@
 
 	inheritPrototype({
 		disable: function (disable) {
-			this.cover.show(disable);
+			this.cover.show.apply(this.cover, arguments);
 			return this;
 		},
 
 		enable: function (enable) {
-			this.cover.hide(enable);
+			this.cover.hide.apply(this.cover, arguments);
 			return this;
 		},
 
@@ -278,11 +276,15 @@
 			this.creators.push(creator);
 		}
 		
-
-		new Button(document.getElementById('start')).on('click', function () {
-			this.dissappear();
-			self.start();
-		});
+		this.field.appendChild(new Item('../img/start_btn.png')
+				.addClass('centered')
+				.addClass('btn')
+				.on('click', function () {
+					this.dissappear();
+					self.start();
+				}
+			).e
+		);
 	}
 
 	inheritPrototype({
@@ -342,6 +344,9 @@
 				c.enable(c.isDependsOk() && c.isFreePlace() && this.coins >= c.cost);
 			}
 
+			if (this.coins === AIMED_COINS)
+				this.stop();
+
 			return this;
 		},
 
@@ -349,11 +354,31 @@
 			console.log('Game Started');
 			this.setCoins(INITIAL_COINS).repeat(this.createCoin, CREATE_INTERVAL, []).timer.start();
 			return this;
-		}
+		},
+
+		stop: function () {
+
+			this.timer.stop();
+
+			for (var i = 0, l = this.creators.length; i < l; ++i) {
+				var c = this.creators[i];
+				c.disable();
+			}
+
+			var cover = document.createElement('div');
+			cover.className = 'field_cover';
+			this.field.appendChild(cover);
+
+			this.field.appendChild(new Item('../img/win.png')
+				.addClass('centered').e
+			);
+
+			return this;		}
 	}, Room);
 
 	window.onload = function () {
 		new Room (document.getElementById('room'));
+		
 	}
 
 })()

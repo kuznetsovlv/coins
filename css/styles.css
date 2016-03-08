@@ -109,6 +109,15 @@ img.btn:active {
 	background: rgba(10, 10, 10, 0.5);
 }
 
+.field_cover {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(10, 10, 10, 0.5);
+}
+
 .line {
 	width: 98%;
 	margin: 20px auto;
