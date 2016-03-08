@@ -241,8 +241,8 @@
 			(function (creator) {
 				creator.onclick(function () {
 					creator.construct();
-					self.setCoins(self.coins - creator.cost);
-					self.repeat(function () {
+					self.setCoins(self.coins - creator.cost)
+						.repeat(function () {
 						for (var i = 0; i < creator.add; ++i)
 							this.createCoin();
 					}, CREATE_INTERVAL, [], self);
@@ -315,15 +315,7 @@
 
 			stat.appendChild(document.createTextNode(value));
 
-			for (var i = 0, l = this.creators.length; i < l; ++i) {
-				var c = this.creators[i];
-				c.enable(c.isDependsOk() && c.isFreePlace() && this.coins >= c.cost);
-			}
-
-			if (this.coins === AIMED_COINS)
-				this.stop();
-
-			return this;
+			return this.update();
 		},
 
 		start: function () {
@@ -352,7 +344,20 @@
 					.e
 			);
 
-			return this;		}
+			return this;
+		},
+
+		update: function () {
+			for (var i = 0, l = this.creators.length; i < l; ++i) {
+				var c = this.creators[i];
+				c.enable(c.isDependsOk() && c.isFreePlace() && this.coins >= c.cost);
+			}
+
+			if (this.coins === AIMED_COINS)
+				this.stop();
+
+			return this;
+		}
 	}, Room);
 
 	window.onload = function () {
