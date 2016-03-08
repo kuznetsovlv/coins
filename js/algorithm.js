@@ -23,10 +23,6 @@
 		}
 	}
 
-	function when (ms) {
-		return Date.now() + ms;
-	}
-
 	/*Interface for ivent listeners*/
 	function Interactive () {
 
@@ -98,32 +94,6 @@
 		return this;
 	};
 
-	function Construction (src, room, atOnce, placeId) {
-		Item.call(this, src);
-		this.room = room;
-		this.atOnece = atOnce;
-		this.placeId = placeId;
-	}
-
-	Construction.prototype.createCoins = function () {
-		for (var i = 0; i < this.atOnece; ++i)
-			this.room.createCoin();
-		return this;
-	};
-
-	function Fabric (room) {
-		Construction.call(this, "../img/fabric.png", room, 1, 'fabrics');
-	}
-
-	inheritPrototype(Construction, Fabric);
-
-	function Factory (room) {
-		Construction.call(this, "../img/factory.png", room, 2, 'factories');
-	}
-
-	inheritPrototype(Construction, Factory);
-
-
 	function Button (elem) {
 		this.e = elem;
 	}
@@ -141,11 +111,13 @@
 
 		this.cost = +elem.dataset.cost;
 		this.max = +elem.dataset.max;
+		this.add = +elem.dataset.add;
 
-		this.target = elem.dataset.target;
+		this.target = document.getElementById(elem.dataset.target);
 
 		this.btn = new Button(this.e.getElementsByTagName('img')[0]);
 		this.cover = new Cover(this.e.getElementsByClassName('cover')[0]);
+
 	}
 
 	inheritPrototype({
@@ -180,14 +152,13 @@
 		},
 
 		isFreePlace: function() {
-			return  document.getElementById(this.target).children.length < this.max;
+			return  this.target.children.length < this.max;
 		},
 
 		construct: function (room) {
-			switch (this.e.id) {
-				case 'fabric': return new Fabric(room);
-				case 'factory': return new Factory(room);
-			}
+			var img = new Image();
+			img.src = this.btn.e.src;
+			this.target.appendChild(img);
 		}
 	}, Creator);
 
@@ -267,23 +238,26 @@
 			var creator = new Creator(creators[i]);
 			(function (creator) {
 				creator.onclick(function () {
-					var construction = creator.construct(self);
-					document.getElementById(creator.target).appendChild(construction.e);
 					self.setCoins(self.coins - creator.cost);
-					self.repeat(construction.createCoins, CREATE_INTERVAL, [], construction);
+					creator.construct();
+					self.repeat(function () {
+						for (var i = 0; i < creator.add; ++i)
+							this.createCoin();
+					}, CREATE_INTERVAL, [], self);
 				});
 			})(creator);
 			this.creators.push(creator);
 		}
 		
-		this.field.appendChild(new Item('../img/start_btn.png')
+		this.field.appendChild(
+			new Item('../img/start_btn.png')
 				.addClass('centered')
 				.addClass('btn')
 				.on('click', function () {
 					this.dissappear();
 					self.start();
-				}
-			).e
+				})
+				.e
 		);
 	}
 
@@ -323,7 +297,7 @@
 			this.timer.addTask(function () {
 				task.apply(context || self, arguments);
 				self.repeat(task, ms, args, context);
-			}, when(ms), args, context || this);
+			}, Date.now() + ms, args, context || this);
 
 			return this;
 		},
@@ -351,8 +325,9 @@
 		},
 
 		start: function () {
-			console.log('Game Started');
-			this.setCoins(INITIAL_COINS).repeat(this.createCoin, CREATE_INTERVAL, []).timer.start();
+			this.setCoins(INITIAL_COINS)
+				.repeat(this.createCoin, CREATE_INTERVAL, [])
+				.timer.start();
 			return this;
 		},
 
@@ -369,8 +344,10 @@
 			cover.className = 'field_cover';
 			this.field.appendChild(cover);
 
-			this.field.appendChild(new Item('../img/win.png')
-				.addClass('centered').e
+			this.field.appendChild(
+				new Item('../img/win.png')
+					.addClass('centered')
+					.e
 			);
 
 			return this;		}

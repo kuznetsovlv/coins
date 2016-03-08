@@ -129,6 +129,10 @@ img.btn:active {
 	display: inline-block;
 }
 
+#factories {
+	height: 198px;
+}
+
 #factories img {
 	margin: 5px;
 }
