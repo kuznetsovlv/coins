@@ -9,10 +9,10 @@
 	/*CONSTANTS*/
 	var INITIAL_COINS = 10;
 	var AIMED_COINS = 500;
-	var FABRIC_COST = 20;
-	var FACTORY_COST = 70;
-	var MAX_FABRICS = 10;
-	var MAX_FACTORIES = 5;
+	// var FABRIC_COST = 20;
+	// var FACTORY_COST = 70;
+	// var MAX_FABRICS = 10;
+	// var MAX_FACTORIES = 5;
 	var CREATE_INTERVAL = 5000;
 
 	function inheritPrototype (from, to) {
@@ -98,9 +98,9 @@
 		for (var key in style)
 			this.e.style[key] = style[key];
 		return this;
-	}
+	};
 
-	function Construction (src, room, atOnece, placeId) {
+	function Construction (src, room, atOnce, placeId) {
 		Item.call(this, src);
 		this.room = room;
 		this.atOnece = atOnce;
@@ -111,7 +111,7 @@
 		for (var i = 0; i < this.atOnece; ++i)
 			this.room.createCoin();
 		return this;
-	}
+	};
 
 	function Fabric (room) {
 		Construction.call(this, "../img/fabric.png", room, 1, 'fabrics');
@@ -131,6 +131,67 @@
 	}
 
 	inheritPrototype(Interactive, Button);
+
+	function Cover (elem) {
+		this.e = elem;
+	}
+
+	inheritPrototype(Interactive, Cover);
+
+	function Creator (elem) {
+		this.e = elem;
+
+		this.cost = +elem.dataset.cost;
+		this.max = +elem.dataset.max;
+
+		this.target = elem.dataset.target;
+
+		this.btn = new Button(this.e.getElementsByTagName('img')[0]);
+		this.cover = new Cover(this.e.getElementsByClassName('cover')[0]);
+	}
+
+	inheritPrototype({
+		disable: function (disable) {
+			this.cover.show(disable);
+			return this;
+		},
+
+		enable: function (enable) {
+			this.cover.hide(enable);
+			return this;
+		},
+
+		onclick: function (handler) {
+			this.btn.on('click', handler);
+			return this;
+		},
+
+		isDependsOk: function () {
+			var depend = this.e.dataset.depend;
+			if (!depend)
+				return true;
+			depend = depend.split(' ');
+
+			for (var i = 0, l = depend.length; i < l; ++i) {
+				var d = depend[i].split(':'),
+				    tmp = document.getElementById(d[0]);
+				if (!tmp || tmp.children.length < +d[1])
+					return false;
+			}
+			return true;
+		},
+
+		isFreePlace: function() {
+			return  document.getElementById(this.target).children.length < this.max;
+		},
+
+		construct: function (room) {
+			switch (this.e.id) {
+				case 'fabric': return new Fabric(room);
+				case 'factory': return new Factory(room);
+			}
+		}
+	}, Creator);
 
 
 	/*Timer manager*/
@@ -193,16 +254,29 @@
 		this.e = elem;
 
 		this.field = document.getElementById('field');
-		this.factoryLine = document.getElementById('factories');
-		this.fabricLine = document.getElementById('fabrics');
 
-		this.fabrics = 0;
-		this.factories = 0;
+		this.store = document.getElementById('store');
+
+		this.creators = [];
 
 		this.timer = new Timer(200);
 
 		var self = this;
 
+		var creators = this.store.getElementsByClassName('creator');
+
+		for (var i = 0, l = creators.length; i < l; ++i) {
+			var creator = new Creator(creators[i]);
+			(function (creator) {
+				creator.onclick(function () {
+					var construction = creator.construct(self);
+					document.getElementById(creator.target).appendChild(construction.e);
+					self.setCoins(self.coins - creator.cost);
+					self.repeat(construction.createCoins, CREATE_INTERVAL, [], construction);
+				});
+			})(creator);
+			this.creators.push(creator);
+		}
 		
 
 		new Button(document.getElementById('start')).on('click', function () {
@@ -263,6 +337,11 @@
 
 			stat.appendChild(document.createTextNode(value));
 
+			for (var i = 0, l = this.creators.length; i < l; ++i) {
+				var c = this.creators[i];
+				c.enable(c.isDependsOk() && c.isFreePlace() && this.coins >= c.cost);
+			}
+
 			return this;
 		},
 
@@ -273,6 +352,8 @@
 		}
 	}, Room);
 
-	window.Room = Room;
+	window.onload = function () {
+		new Room (document.getElementById('room'));
+	}
 
 })()

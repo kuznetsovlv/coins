@@ -8,12 +8,6 @@
 	<![endif]-->
 	<script src="js/algorithm.js"></script>
 
-	<script>
-		window.onload = function () {
-			new Room (document.getElementById('room'));
-		}
-	</script>
-
 </head>
 <body>
 	<section id="room">
@@ -43,11 +37,11 @@
 		</main>
 		<footer>
 			<div id="store" class="cells">
-				<div id="fabric" class="cells">
+				<div id="fabric" class="cells creator" data-target="fabrics" data-max="10" data-cost="20">
 					<img id="fabric_creator" class="btn" src="img/fabric.png" title="fabric">
 					<div class="cover"></div>
 				</div>
-				<div id="factory" class="cells">
+				<div id="factory" class="cells creator" data-target="factories" data-max="5" data-cost="70" data-depend="fabrics:1">
 					<img id="factory_creator" class="btn" src="img/factory.png" title="factory">
 					<div class="cover"></div>
 				</div>
