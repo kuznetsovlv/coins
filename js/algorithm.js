@@ -132,6 +132,7 @@
 		},
 
 		onclick: function (handler) {
+			var self = this;
 			this.btn.on('click', handler);
 			return this;
 		},
@@ -159,6 +160,7 @@
 			var img = new Image();
 			img.src = this.btn.e.src;
 			this.target.appendChild(img);
+			return this;
 		}
 	}, Creator);
 
@@ -238,8 +240,8 @@
 			var creator = new Creator(creators[i]);
 			(function (creator) {
 				creator.onclick(function () {
-					self.setCoins(self.coins - creator.cost);
 					creator.construct();
+					self.setCoins(self.coins - creator.cost);
 					self.repeat(function () {
 						for (var i = 0; i < creator.add; ++i)
 							this.createCoin();
