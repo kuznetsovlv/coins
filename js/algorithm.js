@@ -114,6 +114,17 @@
 	function Creator (elem) {
 		this.e = elem;
 
+		if (!elem.dataset) {
+			elem.dataset = {};
+			var list = 'target,cost,max,depend,add'.split(',');
+			for (var i = 0, l = list.length; i < l; ++i) {
+				var key = list[i],
+				    attr = elem.getAttribute(['data', key].join('-'));
+				if (attr)
+					elem.dataset[key] = attr;
+			}
+		}
+
 		this.cost = +elem.dataset.cost;
 		this.max = +elem.dataset.max;
 		this.add = +elem.dataset.add;
@@ -286,13 +297,6 @@
 			var coins = this.coins || 0;
 			return this.setCoins(++coins);
 		},
-
-		// addConstruction: function (constuction) {
-		// 	++this[constuction.placeId];
-		// 	document.getElementById(constuction[placeId]).appendChild(constuction.e);
-		// 	this.repeat(constuction.createCoins, CREATE_INTERVAL, [], constuction);
-		// 	return this;
-		// },
 
 		createCoin: function () {
 			/*Create new coin*/

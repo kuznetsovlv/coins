@@ -76,19 +76,6 @@
 			get: function () {
 				return new ClassList(this);
 			}
-		},
-		dataset: {
-			get: function () {
-				var res = {},
-				    list = 'target,cost,max,depend,add'.split(',');
-				for (var i = 0, l = list.length; i < l; ++i) {
-					var key = list[i],
-					    attr = this.getAttribute(['data', key].join('-'));
-					if (attr)
-						res[key] = attr;
-				}
-				return res;
-			}
 		}
 	});
 })();
