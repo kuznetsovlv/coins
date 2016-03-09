@@ -12,6 +12,7 @@
 	var CREATE_INTERVAL = 5000;
 
 	function inheritPrototype (from, to) {
+		/*Inherit or expand prototype*/
 		from = from.prototype || from;
 		to = to.prototype || to;
 
@@ -74,7 +75,7 @@
 		}
 	}
 
-
+	/*Super class for items on the field*/
 	function Item (src) {
 		this.e = new Image();
 		this.e.src = src;
@@ -82,6 +83,7 @@
 
 	inheritPrototype(Interactive, Item);
 
+	/*The only ineractive item on the field is coin*/
 	function Coin () {
 		Item.call(this, '../img/coin.png');
 	}
@@ -94,18 +96,21 @@
 		return this;
 	};
 
+	/*Class for buttons*/
 	function Button (elem) {
 		this.e = elem;
 	}
 
 	inheritPrototype(Interactive, Button);
 
+	/*Disabling cover for interactive elements*/
 	function Cover (elem) {
 		this.e = elem;
 	}
 
 	inheritPrototype(Interactive, Cover);
 
+	/*Class for construction creators*/
 	function Creator (elem) {
 		this.e = elem;
 
@@ -132,6 +137,7 @@
 		},
 
 		onclick: function (handler) {
+			/*The only event creator uses is click event*/
 			var self = this;
 			this.btn.on('click', handler);
 			return this;
@@ -157,6 +163,7 @@
 		},
 
 		construct: function (room) {
+			/*Main method to create and place new construction*/
 			var img = new Image();
 			img.src = this.btn.e.src;
 			this.target.appendChild(img);
@@ -173,6 +180,7 @@
 
 	inheritPrototype({
 		addTask: function (task, when, args, context) {
+			/*Add task into shedule*/
 			if (this.tasks[when])
 				this.tasks[when].push({task: task, args: args, context: context});
 			else
@@ -181,6 +189,7 @@
 		},
 
 		complete: function () {
+			/*Complete all tasks wich the time has comme for*/
 			var now = Date.now();
 			for (var key in this.tasks) {
 				if (now >= +key) {
@@ -200,6 +209,7 @@
 		},
 
 		setInterval: function () {
+			/*Set new interval for check shedule*/
 			if (this.interval)
 				return this;
 			var self = this;
@@ -207,9 +217,13 @@
 			return this;
 		},
 
-		start: function () {return this.setInterval();},
+		start: function () {
+			/*Start timer*/
+			return this.setInterval();
+		},
 
 		stop: function () {
+			/*Stop timer*/
 			if (!this.interval)
 				return this;
 
@@ -220,6 +234,7 @@
 		}
 	}, Timer);
 
+	/*Main game manager*/
 	function Room (elem) {
 
 		this.e = elem;
@@ -228,12 +243,13 @@
 
 		this.store = document.getElementById('store');
 
-		this.creators = [];
+		this.creators = []; /*Construction creators list*/
 
 		this.timer = new Timer(200);
 
 		var self = this;
 
+		/*Initialize creators list*/
 		var creators = this.store.getElementsByClassName('creator');
 
 		for (var i = 0, l = creators.length; i < l; ++i) {
@@ -251,6 +267,7 @@
 			this.creators.push(creator);
 		}
 		
+		/*Add start button*/
 		this.field.appendChild(
 			new Item('../img/start_btn.png')
 				.addClass('centered')
@@ -265,25 +282,30 @@
 
 	inheritPrototype({
 		addCoin: function () {
-			var coins = this.coins || 0
+			/*Increese got coins number*/
+			var coins = this.coins || 0;
 			return this.setCoins(++coins);
 		},
 
-		addConstruction: function (constuction) {
-			++this[constuction.placeId];
-			document.getElementById(constuction[placeId]).appendChild(constuction.e);
-			this.repeat(constuction.createCoins, CREATE_INTERVAL, [], constuction);
-			return this;
-		},
+		// addConstruction: function (constuction) {
+		// 	++this[constuction.placeId];
+		// 	document.getElementById(constuction[placeId]).appendChild(constuction.e);
+		// 	this.repeat(constuction.createCoins, CREATE_INTERVAL, [], constuction);
+		// 	return this;
+		// },
 
 		createCoin: function () {
+			/*Create new coin*/
 			var rect = this.field.getBoundingClientRect(),
 			    self = this;
 
+			/*By click event the coin must dissapear and increase coins number in the bank*/
 			var coin = new Coin().on('click', function () {
 				this.dissappear();
 				self.addCoin();
 			});
+
+			/*Place coin into rangom place on the field*/
 			coin.setStyle({
 				position: 'absolute',
 				left: [Math.random() * 100 * (1 - coin.e.naturalWidth / (rect.width || rect.right - rect.left)), '%'].join(''),
@@ -294,6 +316,7 @@
 		},
 
 		repeat: function (task, ms, args, context) {
+			/*Add task into game's shedule*/
 			var self = this;
 
 			this.timer.addTask(function () {
@@ -305,7 +328,7 @@
 		},
 
 		setCoins: function (value) {
-
+			/*Set coin number in the bank*/
 			this.coins = value;
 
 			var stat = document.getElementById('statistic');
@@ -319,25 +342,29 @@
 		},
 
 		start: function () {
+			/*Start the game*/
 			this.setCoins(INITIAL_COINS)
-				.repeat(this.createCoin, CREATE_INTERVAL, [])
-				.timer.start();
+				.repeat(this.createCoin, CREATE_INTERVAL, []) /*Add task to create 1 coin every CREATE_INTERVAL ms*/
+				.timer.start(); //And start timer
 			return this;
 		},
 
 		stop: function () {
+			/*Finish the game*/
+			this.timer.stop(); //Stop timer
 
-			this.timer.stop();
-
+			/*Disable all creators*/
 			for (var i = 0, l = this.creators.length; i < l; ++i) {
 				var c = this.creators[i];
 				c.disable();
 			}
 
+			/*Disable the field and all coins*/
 			var cover = document.createElement('div');
 			cover.className = 'field_cover';
 			this.field.appendChild(cover);
 
+			/*Finish image show*/
 			this.field.appendChild(
 				new Item('../img/win.png')
 					.addClass('centered')
@@ -348,11 +375,15 @@
 		},
 
 		update: function () {
+			/*Update game status*/
+
+			/*Update creator's status*/
 			for (var i = 0, l = this.creators.length; i < l; ++i) {
 				var c = this.creators[i];
 				c.enable(c.isDependsOk() && c.isFreePlace() && this.coins >= c.cost);
 			}
 
+			/*Finish game if coin number is enough*/
 			if (this.coins === AIMED_COINS)
 				this.stop();
 
@@ -361,6 +392,7 @@
 	}, Room);
 
 	window.onload = function () {
+		/*GO!*/
 		new Room (document.getElementById('room'));
 		
 	}

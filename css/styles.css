@@ -26,7 +26,7 @@
 }
 
 section {
-	display: block;
+	display: block; /*for IE9*/
 	width: 1024px;
 	height: 800px;
 	margin: auto;
@@ -34,14 +34,14 @@ section {
 
 main {
 	position: relative;
-	display: block;
+	display: block; /*for IE9*/
 	padding: 20px;
 	height: 627px;
 	background: url(../img/fon.jpg) no-repeat;
 }
 
 footer {
-	display: block;
+	display: block; /*for IE9*/
 	background: url(../img/panel.jpg) no-repeat;
 	height: 173px;
 }
