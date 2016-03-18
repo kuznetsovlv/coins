@@ -221,10 +221,8 @@
 
 		setInterval: function () {
 			/*Set new interval for check shedule*/
-			if (this.interval)
-				return this;
 			var self = this;
-			this.interval = setInterval(function () {self.complete.call(self);}, this.ms);
+			this.interval = setTimeout(function () {self.complete.call(self);}, this.ms);
 			return this;
 		},
 
@@ -238,7 +236,7 @@
 			if (!this.interval)
 				return this;
 
-			clearInterval(this.interval);
+			clearTimeout(this.interval);
 			delete this.interval;
 
 			return this;
